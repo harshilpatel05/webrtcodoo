@@ -1,20 +1,25 @@
+// Importing react elements and firebase config
 import React, { useState, useEffect, useRef } from 'react';
 import { db } from "../firebase";
 import { collection, doc, getDoc, setDoc, addDoc, onSnapshot } from "firebase/firestore";
-
+// Setting up stun servers for NAT traversal. i dont think in a real life 
+// use case scenario using stun servers is a good idea idk maybe who cares
 const servers = {
   iceServers: [
     {
       urls: ['stun:stun1.l.google.com:19302', 'stun:stun2.l.google.com:19302'],
     },
   ],
+  // max num of candidates
   iceCandidatePoolSize: 10,
 };
 
 const VideoCall = () => {
+    // Setting the states of the stream initially
   const [localStream, setLocalStream] = useState(null);
   const [remoteStream, setRemoteStream] = useState(null);
   const [callId, setCallId] = useState('');
+  
   const pc = useRef(new RTCPeerConnection(servers));
 
   const webcamVideo = useRef(null);
@@ -93,42 +98,55 @@ const VideoCall = () => {
       });
     });
   };
-
   const answerCall = async () => {
+    if (!callId) {
+      console.error("Call ID is missing!");
+      return;
+    }
+  
     const callDoc = doc(db, "calls", callId);
     const answerCandidates = collection(callDoc, "answerCandidates");
     const offerCandidates = collection(callDoc, "offerCandidates");
-
-    pc.current.onicecandidate = (event) => {
+  
+    pc.current.onicecandidate = async (event) => {
       if (event.candidate) {
-        addDoc(answerCandidates, event.candidate.toJSON());
+        await addDoc(answerCandidates, event.candidate.toJSON());
       }
     };
-
-    const callSnap = await getDoc(callDoc);
-    const callData = callSnap.data();
+  
+    const callData = (await getDoc(callDoc)).data();
+    if (!callData?.offer) {
+      console.error("No offer found in Firestore!");
+      return;
+    }
+  
     const offerDescription = callData.offer;
-    await pc.current.setRemoteDescription(new RTCSessionDescription(offerDescription));
-
+  
+    // Ensure PeerConnection is in the correct state
+    if (pc.current.signalingState !== "have-remote-offer") {
+      await pc.current.setRemoteDescription(new RTCSessionDescription(offerDescription));
+    }
+  
+    if (pc.current.signalingState !== "have-remote-offer") {
+      console.error("PeerConnection is not in 'have-remote-offer' state!");
+      return;
+    }
+  
     const answerDescription = await pc.current.createAnswer();
     await pc.current.setLocalDescription(answerDescription);
-
-    const answer = {
-      type: answerDescription.type,
-      sdp: answerDescription.sdp,
-    };
-    await setDoc(callDoc, { answer }, { merge: true });
-
+    await setDoc(callDoc, { answer: answerDescription }, { merge: true });
+  
     onSnapshot(offerCandidates, (snapshot) => {
       snapshot.docChanges().forEach((change) => {
-        if (change.type === 'added') {
+        if (change.type === "added") {
           const candidate = new RTCIceCandidate(change.doc.data());
           pc.current.addIceCandidate(candidate);
         }
       });
     });
   };
-
+  
+  
   const hangupCall = () => {
     pc.current.close();
     if (localStream) {
