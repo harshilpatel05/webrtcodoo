@@ -1,6 +1,6 @@
-// src/components/VideoCall.js
 import React, { useState, useEffect, useRef } from 'react';
-import { firestore } from '../firebase';
+import { db } from "../firebase";
+import { collection, doc, getDoc, setDoc, addDoc, onSnapshot } from "firebase/firestore";
 
 const servers = {
   iceServers: [
@@ -55,15 +55,15 @@ const VideoCall = () => {
   };
 
   const createRoom = async () => {
-    const callDoc = firestore.collection('calls').doc();
-    const offerCandidates = callDoc.collection('offerCandidates');
-    const answerCandidates = callDoc.collection('answerCandidates');
+    const callDoc = doc(collection(db, "calls"));
+    const offerCandidates = collection(callDoc, "offerCandidates");
+    const answerCandidates = collection(callDoc, "answerCandidates");
 
     setCallId(callDoc.id);
 
     pc.current.onicecandidate = (event) => {
       if (event.candidate) {
-        offerCandidates.add(event.candidate.toJSON());
+        addDoc(offerCandidates, event.candidate.toJSON());
       }
     };
 
@@ -74,9 +74,9 @@ const VideoCall = () => {
       sdp: offerDescription.sdp,
       type: offerDescription.type,
     };
-    await callDoc.set({ offer });
+    await setDoc(callDoc, { offer });
 
-    callDoc.onSnapshot((snapshot) => {
+    onSnapshot(callDoc, (snapshot) => {
       const data = snapshot.data();
       if (!pc.current.currentRemoteDescription && data?.answer) {
         const answerDescription = new RTCSessionDescription(data.answer);
@@ -84,7 +84,7 @@ const VideoCall = () => {
       }
     });
 
-    answerCandidates.onSnapshot((snapshot) => {
+    onSnapshot(answerCandidates, (snapshot) => {
       snapshot.docChanges().forEach((change) => {
         if (change.type === 'added') {
           const candidate = new RTCIceCandidate(change.doc.data());
@@ -95,17 +95,18 @@ const VideoCall = () => {
   };
 
   const answerCall = async () => {
-    const callDoc = firestore.collection('calls').doc(callId);
-    const answerCandidates = callDoc.collection('answerCandidates');
-    const offerCandidates = callDoc.collection('offerCandidates');
+    const callDoc = doc(db, "calls", callId);
+    const answerCandidates = collection(callDoc, "answerCandidates");
+    const offerCandidates = collection(callDoc, "offerCandidates");
 
     pc.current.onicecandidate = (event) => {
       if (event.candidate) {
-        answerCandidates.add(event.candidate.toJSON());
+        addDoc(answerCandidates, event.candidate.toJSON());
       }
     };
 
-    const callData = (await callDoc.get()).data();
+    const callSnap = await getDoc(callDoc);
+    const callData = callSnap.data();
     const offerDescription = callData.offer;
     await pc.current.setRemoteDescription(new RTCSessionDescription(offerDescription));
 
@@ -116,9 +117,9 @@ const VideoCall = () => {
       type: answerDescription.type,
       sdp: answerDescription.sdp,
     };
-    await callDoc.update({ answer });
+    await setDoc(callDoc, { answer }, { merge: true });
 
-    offerCandidates.onSnapshot((snapshot) => {
+    onSnapshot(offerCandidates, (snapshot) => {
       snapshot.docChanges().forEach((change) => {
         if (change.type === 'added') {
           const candidate = new RTCIceCandidate(change.doc.data());
