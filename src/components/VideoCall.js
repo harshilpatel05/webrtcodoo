@@ -1,27 +1,24 @@
-// Importing react elements and firebase config
 import React, { useState, useEffect, useRef } from 'react';
 import { db } from "../firebase";
 import { collection, doc, getDoc, setDoc, addDoc, onSnapshot } from "firebase/firestore";
-// Setting up stun servers for NAT traversal. i dont think in a real life 
-// use case scenario using stun servers is a good idea idk maybe who cares
+import "../styles/VideoCall.css";
+
+
 const servers = {
   iceServers: [
     {
       urls: ['stun:stun1.l.google.com:19302', 'stun:stun2.l.google.com:19302'],
     },
   ],
-  // max num of candidates
   iceCandidatePoolSize: 10,
 };
 
 const VideoCall = () => {
-    // Setting the states of the stream initially
   const [localStream, setLocalStream] = useState(null);
   const [remoteStream, setRemoteStream] = useState(null);
   const [callId, setCallId] = useState('');
   
   const pc = useRef(new RTCPeerConnection(servers));
-
   const webcamVideo = useRef(null);
   const remoteVideo = useRef(null);
 
@@ -98,6 +95,7 @@ const VideoCall = () => {
       });
     });
   };
+
   const answerCall = async () => {
     if (!callId) {
       console.error("Call ID is missing!");
@@ -122,7 +120,6 @@ const VideoCall = () => {
   
     const offerDescription = callData.offer;
   
-    // Ensure PeerConnection is in the correct state
     if (pc.current.signalingState !== "have-remote-offer") {
       await pc.current.setRemoteDescription(new RTCSessionDescription(offerDescription));
     }
@@ -145,8 +142,7 @@ const VideoCall = () => {
       });
     });
   };
-  
-  
+
   const hangupCall = () => {
     pc.current.close();
     if (localStream) {
@@ -161,38 +157,33 @@ const VideoCall = () => {
   };
 
   return (
-    <div>
-      <h2>I love Aum Tamboli</h2>
+    <div className="video-call-container">
       <div className="videos">
-        <span>
-          <h2>Doctor</h2>
-          <video ref={remoteVideo} autoPlay playsInline />
-        </span>
-        <span>
-          <h2>Gareeb</h2>
-          <video ref={webcamVideo} autoPlay muted />
-        </span>
+        <div className="video-wrapper">
+          <video ref={remoteVideo} autoPlay playsInline className="video"/>
+        </div>
+        <div className="video-wrapper">
+          <video ref={webcamVideo} autoPlay muted className="video"/>
+        </div>
       </div>
-      <div className="button-row">
-        <button onClick={toggleWebcam}>Toggle webcam</button>
-        <button onClick={createRoom} disabled={!localStream}>
-          Create Room
-        </button>
+
+      <div className="button-container">
+        <button className="btn" onClick={toggleWebcam}>Toggle Webcam</button>
+        <button className="btn" onClick={createRoom} disabled={!localStream}>Create Room</button>
       </div>
-      <div className="input-row">
+
+      <div className="input-section">
         <input
+          className="input-box"
           value={callId}
           onChange={(e) => setCallId(e.target.value)}
           placeholder="Enter Meeting ID"
         />
       </div>
-      <div className="answer-hangup-row">
-        <button onClick={answerCall} disabled={!localStream}>
-          Answer
-        </button>
-        <button onClick={hangupCall} disabled={!localStream}>
-          Hangup
-        </button>
+
+      <div className="button-container">
+        <button className="btn" onClick={answerCall} disabled={!localStream}>Answer</button>
+        <button className="btn hangup" onClick={hangupCall} disabled={!localStream}>Hangup</button>
       </div>
     </div>
   );
