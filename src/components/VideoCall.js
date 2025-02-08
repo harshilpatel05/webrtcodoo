@@ -154,6 +154,7 @@ const VideoCall = () => {
     setLocalStream(null);
     setRemoteStream(null);
     setCallId('');
+    pc.current = new RTCPeerConnection(servers);
   };
 
   return (
