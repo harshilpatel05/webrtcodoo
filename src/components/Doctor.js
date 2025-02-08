@@ -13,7 +13,7 @@ const servers = {
   iceCandidatePoolSize: 10,
 };
 
-const VideoCall = () => {
+const Doctor = () => {
   const [localStream, setLocalStream] = useState(null);
   const [remoteStream, setRemoteStream] = useState(null);
   const [callId, setCallId] = useState('');
@@ -169,7 +169,7 @@ const VideoCall = () => {
 
       <div className="button-container">
         <button className="btn" onClick={toggleWebcam}>Toggle Webcam</button>
-        <button className="btn" onClick={answerCall} disabled={!localStream}>Join Room</button>
+        <button className="btn" onClick={createRoom} disabled={!localStream}>Create Room</button>
 
       </div>
 
@@ -189,4 +189,4 @@ const VideoCall = () => {
   );
 };
 
-export default VideoCall;
+export default Doctor;
