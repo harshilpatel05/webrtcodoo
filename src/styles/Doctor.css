@@ -1,0 +1,77 @@
+/* Parent container to hold both video-call-container and scheduler */
+.parent-container {
+    display: flex;
+    flex-direction: row; /* Align children horizontally */
+    justify-content: space-between; /* Space out the two containers */
+    align-items: stretch; /* Stretch children to fill the height */
+    width: 100%; /* Ensure the parent takes full width */
+    height: 100vh; /* Take full viewport height */
+    margin: 0; /* Remove margin */
+    padding: 0; /* Remove padding */
+    box-sizing: border-box; /* Include padding in the width calculation */
+  }
+  
+  /* Update video-call-container */
+  .video-call-container {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    background-color: rgba(0, 49, 97, 0.8); /* was #181818 */
+    color: #6482AD; /* was white */
+    padding: 20px;
+    border-radius: 0px;
+    width: 48%; /* Adjust width to fit side by side */
+    max-width: 400px;
+    margin: 0; /* Remove margin */
+    box-shadow: none; /* using #6482AD with 0.2 opacity */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    height: 100%; /* Take full height of the parent */
+    box-sizing: border-box; /* Include padding in the height calculation */
+  }
+  
+  /* Update scheduler */
+  .scheduler {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    background-color: rgba(0, 49, 97, 0.8); /* was #181818 */
+    color: #6482AD; /* was white */
+    padding: 20px; /* Add padding for spacing inside the scheduler */
+    border-radius: 0px;
+    width: 48%; /* Adjust width to fit side by side */
+    max-width: 800px; /* Adjust max-width for wider scheduler */
+    margin: 0; /* Remove margin */
+    box-shadow: none; /* using #6482AD with 0.2 opacity */
+    display: flex;
+    flex-direction: column; /* Stack scheduler sections vertically */
+    justify-content: flex-start; /* Align content to the top */
+    align-items: center; /* Center align the content */
+    height: 100%; /* Take full height of the parent */
+    box-sizing: border-box; /* Include padding in the height calculation */
+    overflow-x: auto;
+  }
+  
+  /* Scheduler sections */
+  .scheduler-header,
+  .scheduler-calendar,
+  .scheduler-footer {
+    flex: 1; /* Each section takes equal space */
+    width: 100%;
+    display: flex;
+    flex-direction: column; /* Stack content vertically */
+    justify-content: center;
+    align-items: center;
+    border: 1px solid #6482AD; /* Optional: Add borders for visual separation */
+    padding: 10px;
+    box-sizing: border-box; /* Include borders in the height calculation */
+    margin-bottom: 10px; /* Optional: Space between sections */
+  }
+  
+  /* Nylas Scheduler iframe */
+  .nylas-scheduler {
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    border: none; /* Remove any default border */
+  }
+  

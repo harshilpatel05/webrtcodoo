@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { db } from "../firebase";
 import { collection, doc, getDoc, setDoc, addDoc, onSnapshot } from "firebase/firestore";
-import "../styles/VideoCall.css";
+import "../styles/Doctor.css";
 
 
 const servers = {
@@ -157,36 +157,51 @@ const Doctor = () => {
   };
 
   return (
-    <div className="video-call-container">
-      <div className="videos">
-        <div className="video-wrapper">
-          <video ref={remoteVideo} autoPlay playsInline className="video"/>
-        </div>
-        <div className="video-wrapper">
-          <video ref={webcamVideo} autoPlay muted className="video"/>
-        </div>
+    <div className="parent-container">
+  <div className="video-call-container">
+    <div className="videos">
+      <div className="video-wrapper">
+        <video ref={remoteVideo} autoPlay playsInline className="video" />
       </div>
-
-      <div className="button-container">
-        <button className="btn" onClick={toggleWebcam}>Toggle Webcam</button>
-        <button className="btn" onClick={createRoom} disabled={!localStream}>Create Room</button>
-
-      </div>
-
-      <div className="input-section">
-        <input
-          className="input-box"
-          value={callId}
-          onChange={(e) => setCallId(e.target.value)}
-          placeholder="Enter Meeting ID"
-        />
-      </div>
-
-      <div className="button-container">
-        <button className="btn hangup" onClick={hangupCall} disabled={!localStream}>Hangup</button>
+      <div className="video-wrapper">
+        <video ref={webcamVideo} autoPlay muted className="video" />
       </div>
     </div>
-  );
-};
+
+    <div className="button-container">
+      <button className="btn" onClick={toggleWebcam}>Toggle Webcam</button>
+      <button className="btn" onClick={createRoom} disabled={!localStream}>Create Room</button>
+    </div>
+
+    <div className="input-section">
+      <input
+        className="input-box"
+        value={callId}
+        onChange={(e) => setCallId(e.target.value)}
+        placeholder="Enter Meeting ID"
+      />
+    </div>
+
+    <div className="button-container">
+      <button className="btn hangup" onClick={hangupCall} disabled={!localStream}>Hangup</button>
+    </div>
+  </div>
+
+  <div className="scheduler">
+  
+    {/* Scheduler Calendar */}
+    <div className="scheduler-calendar">
+      <iframe
+        src="https://scheduler.nylas.com/harshilpatel05"
+        className="nylas-scheduler"
+        frameBorder="0"
+      />
+    </div>
+    {/* Scheduler Footer */}
+    
+  </div>
+</div>
+  )
+}
 
 export default Doctor;
