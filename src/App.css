@@ -1,0 +1,93 @@
+/* src/App.css */
+body {
+  font-family: 'Arial', monospace;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-align: center;
+  color: black;
+}
+
+video {
+  width: 25vw;
+  height: 15vw;
+  margin: 1rem 0;
+  background: grey;
+  display: block;
+  object-fit: cover;
+  transform: scaleX(-1);
+  border: 2px solid black;
+}
+
+.videos {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  padding-left: 20px;
+  outline: 3px;
+}
+
+button {
+  font-size: 1.5rem;
+  padding: 15px 30px;
+  background-color: white;
+  color: black;
+  border: 3px solid black;
+  cursor: pointer;
+  margin: 10px;
+  border-radius: 0;
+  font-weight: bold;
+}
+
+button:hover {
+  background-color: black;
+  color: white;
+  border: 3px solid white;
+}
+
+.button-row {
+  display: flex;
+  justify-content: flex-start;
+  gap: 20px;
+  margin: 10px 0;
+}
+
+.input-row {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 20px;
+  margin: 10px 0;
+}
+
+.answer-hangup-row {
+  display: flex;
+  justify-content: flex-start;
+  gap: 20px;
+  margin: 0px;
+}
+
+input {
+  font-size: 1.5rem;
+  padding: 15px;
+  background-color: white;
+  color: black;
+  border: 3px solid black;
+  text-align: center;
+  font-weight: bold;
+  width: 480px;
+  margin-left: 10px;
+}
+
+#answerButton {
+  background-color: lime;
+  border-color: black;
+  color: black;
+}
+
+#hangupButton {
+  background-color: red;
+  border-color: black;
+  color: white;
+  margin-left: 140px;
+}
