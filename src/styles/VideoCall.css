@@ -131,3 +131,62 @@
   background-color: #F5EDED; /* matches container background */
   color: black; /* matches container text */
 }
+
+
+/* Mobile Styles (max-width: 767px) */
+@media (max-width: 767px) {
+  /* Switch to vertical layout */
+  .parent-container {
+    flex-direction: column; /* Stack children vertically */
+    height: auto;           /* Allow container to grow with content */
+    padding: 10px;          /* Add some padding for spacing */
+  }
+
+  /* Adjust video-call-container */
+  .video-call-container {
+    max-width: none;        /* Remove max-width restriction */
+    height: auto;           /* Allow container to grow with content */
+    margin-bottom: 20px;    /* Add space between sections */
+    padding: 15px;          /* Reduce padding for smaller screens */
+  }
+
+  /* Adjust videos section */
+  .videos {
+    flex-direction: column; /* Stack videos vertically */
+    margin-left: 0;         /* Remove left margin */
+    margin-right: 0;        /* Remove right margin */
+    width: auto;
+    overflow-x: auto;       /* Allow horizontal scrolling if necessary */
+    justify-content: center;
+  }
+
+  /* Force video to maintain 300px width */
+  .video {
+    width: 300px !important;  /* Force width even if space is limited */
+    height: 200px !important;            /* Adjust height for mobile */
+    flex-shrink: 0;           /* Prevent the video from shrinking */
+  }
+
+  /* Adjust buttons */
+  .button-container {
+    flex-direction: column; /* Stack buttons vertically */
+    gap: 5px;               /* Reduce gap between buttons */
+  }
+
+  .btn,
+  .hangup {
+    width: 100%;            /* Full width for buttons */
+    margin: 5px 0;          /* Adjust margin for stacked buttons */
+  }
+
+  /* Adjust input section */
+  .input-section {
+    flex-direction: column; /* Stack input and button vertically */
+  }
+
+  .input-box {
+    width: 340px !important;           /* Full width for input */
+    margin-bottom: 0px !important;    /* Add space between input and button */
+  }
+
+}

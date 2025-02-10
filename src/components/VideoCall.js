@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { db } from "../firebase";
 import { collection, doc, getDoc, setDoc, addDoc, onSnapshot } from "firebase/firestore";
 import "../styles/VideoCall.css";
-
+import { FaMicrophone, FaMicrophoneSlash } from "react-icons/fa";
 
 const servers = {
   iceServers: [
@@ -17,18 +17,15 @@ const VideoCall = () => {
   const [localStream, setLocalStream] = useState(null);
   const [remoteStream, setRemoteStream] = useState(null);
   const [callId, setCallId] = useState('');
+  const [isMuted, setIsMuted] = useState(false);
   
   const pc = useRef(new RTCPeerConnection(servers));
   const webcamVideo = useRef(null);
   const remoteVideo = useRef(null);
 
   useEffect(() => {
-    if (localStream) {
-      webcamVideo.current.srcObject = localStream;
-    }
-    if (remoteStream) {
-      remoteVideo.current.srcObject = remoteStream;
-    }
+    webcamVideo.current.srcObject = localStream;
+    remoteVideo.current.srcObject = remoteStream;
   }, [localStream, remoteStream]);
 
   const toggleWebcam = async () => {
@@ -54,6 +51,16 @@ const VideoCall = () => {
         videoTrack.enabled = !videoTrack.enabled;
       }
     }
+  };
+
+  const toggleMic = () => {
+    const newMuteState = !isMuted;
+    if (localStream) {
+      localStream.getAudioTracks().forEach(track => {
+        track.enabled = !newMuteState;
+      });
+    }
+    setIsMuted(newMuteState);
   };
 
   const createRoom = async () => {
@@ -151,9 +158,11 @@ const VideoCall = () => {
     if (remoteStream) {
       remoteStream.getTracks().forEach((track) => track.stop());
     }
+    
     setLocalStream(null);
     setRemoteStream(null);
     setCallId('');
+    setIsMuted(true); // Reset mute state
     pc.current = new RTCPeerConnection(servers);
   };
 
@@ -171,7 +180,6 @@ const VideoCall = () => {
       <div className="button-container">
         <button className="btn" onClick={toggleWebcam}>Toggle Webcam</button>
         <button className="btn" onClick={answerCall} disabled={!localStream}>Join Room</button>
-
       </div>
 
       <div className="input-section">
@@ -185,6 +193,9 @@ const VideoCall = () => {
 
       <div className="button-container">
         <button className="btn hangup" onClick={hangupCall} disabled={!localStream}>Hangup</button>
+        <button className="btn mute" onClick={toggleMic} disabled={!localStream}>
+          {isMuted ? <FaMicrophoneSlash /> : <FaMicrophone />}
+        </button>
       </div>
     </div>
   );

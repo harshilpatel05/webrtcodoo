@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { db } from "../firebase";
 import { collection, doc, getDoc, setDoc, addDoc, onSnapshot } from "firebase/firestore";
 import "../styles/Doctor.css";
+import { FaMicrophone, FaMicrophoneSlash } from "react-icons/fa";
 
 const servers = {
   iceServers: [
@@ -18,6 +19,7 @@ const Doctor = () => {
   const pc = useRef(new RTCPeerConnection(servers));
   const webcamVideo = useRef(null);
   const remoteVideo = useRef(null);
+  const [isMuted, setIsMuted] = useState(false);
 
   // New state for scheduler events
   const [schedulerEvents, setSchedulerEvents] = useState([]);
@@ -66,7 +68,15 @@ const Doctor = () => {
       }
     }
   };
-
+  const toggleMic = () => {
+    const newMuteState = !isMuted;
+    if (localStream) {
+      localStream.getAudioTracks().forEach(track => {
+        track.enabled = !newMuteState;
+      });
+    }
+    setIsMuted(newMuteState);
+  };
   const createRoom = async () => {
     try {
       console.log('Creating room...');
@@ -170,6 +180,7 @@ const Doctor = () => {
     setLocalStream(null);
     setRemoteStream(null);
     setCallId('');
+    setIsMuted(true);
     pc.current = new RTCPeerConnection(servers);
   };
 
@@ -208,6 +219,9 @@ const Doctor = () => {
         <div className="button-container">
           <button className="btn hangup" onClick={hangupCall} disabled={!localStream}>
             Hangup
+          </button>
+          <button className="btn mute" onClick={toggleMic} disabled={!localStream}>
+                    {isMuted ? <FaMicrophoneSlash /> : <FaMicrophone />}
           </button>
         </div>
       </div>

@@ -163,17 +163,19 @@
     border-radius: 2px;
     font-size: 16px;
     transition: background-color 0.3s ease-in-out;
-    width: 320px; /* fixed width */
+    width: 250px; /* fixed width */
     height: 45px; /* fixed height */
     text-align: center;
     display: flex;
     align-items: center;
     justify-content: center;
   }
-  
-  .btn:hover {
-    background-color: #6482AD; /* replaced #0077cc */
+  .mute{
+    width: 50px !important;
+    font-size: 16px;
   }
+  
+
   
   .hangup:hover {
     background-color: #7FA1C3; /* replaced #a71d2a */
@@ -199,3 +201,75 @@
     background-color: #F5EDED; /* matches container background */
     color: black; /* matches container text */
   }
+  /* Mobile Styles (max-width: 767px) */
+@media (max-width: 767px) {
+  /* Switch to vertical layout */
+  .parent-container {
+    flex-direction: column; /* Stack children vertically */
+    height: auto; /* Allow container to grow with content */
+  }
+
+  /* Adjust video-call-container */
+  .video-call-container {
+    width: 100%; /* Full width */
+    max-width: none; /* Remove max-width restriction */
+    height: auto; /* Allow container to grow with content */
+    margin-bottom: 20px; /* Add space between sections */
+    padding: 15px; /* Reduce padding for smaller screens */
+  }
+
+  /* Adjust scheduler */
+  .scheduler {
+    width: 100%; /* Full width */
+    max-width: none; /* Remove max-width restriction */
+    height: auto; /* Allow container to grow with content */
+    padding: 15px 0; /* Reduce padding for smaller screens */
+  }
+
+  /* Adjust scheduler iframe */
+  .nylas-scheduler {
+    height: 60vh; /* Reduce height for mobile */
+    transform: scale(1); /* Reset scaling for mobile */
+  }
+
+  /* Adjust scheduler events section */
+  .scheduler-events {
+    height: auto; /* Allow events section to grow */
+    max-height: 30vh; /* Limit height for mobile */
+    margin: 10px 0; /* Reduce margin for smaller screens */
+  }
+
+  /* Adjust videos section */
+  .videos {
+    flex-direction: column; /* Stack videos vertically */
+    margin-left: 0; /* Remove left margin */
+    margin-right: 0; /* Remove right margin */
+  }
+
+  .video {
+    width: 100%; /* Full width for videos */
+    height: 150px; /* Reduce height for mobile */
+  }
+
+  /* Adjust buttons */
+  .button-container {
+    flex-direction: column; /* Stack buttons vertically */
+    gap: 5px; /* Reduce gap between buttons */
+  }
+
+  .btn,
+  .hangup {
+    width: 100%; /* Full width for buttons */
+    margin: 5px 0; /* Adjust margin for stacked buttons */
+  }
+
+  /* Adjust input section */
+  .input-section {
+    flex-direction: column; /* Stack input and button vertically */
+  }
+
+  .input-box {
+    width: 350px; /* Full width for input */
+    margin-bottom: 10px; /* Add space between input and button */
+  }
+}
